@@ -1,3 +1,8 @@
+This is extended example from https://github.com/jfversluis/XFBackgroundLocationSample
+
+Trying to get application runing even when screen is off.
+
+
 iOS: [![YouTube Video Views](https://img.shields.io/youtube/views/e9YIXj9Uh9I?style=social)](https://youtu.be/e9YIXj9Uh9I)
 
 Android: [![YouTube Video Views](https://img.shields.io/youtube/views/Q_renpfnbk4?style=social)](https://youtu.be/Q_renpfnbk4)

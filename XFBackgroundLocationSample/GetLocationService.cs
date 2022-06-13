@@ -9,7 +9,7 @@ namespace XFBackgroundLocationSample
 	public class GetLocationService
 	{
 		readonly bool stopping = false;
-		public GetLocationService()
+        public GetLocationService()
 		{
 		}
 

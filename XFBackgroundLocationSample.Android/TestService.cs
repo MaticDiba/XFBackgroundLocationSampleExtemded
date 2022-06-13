@@ -20,6 +20,8 @@ namespace XFBackgroundLocationSample.Droid
         private int NOTIFICATION_SERVICE_ID = 1001;
         CancellationTokenSource _cts;
         GetLocationService locationService;
+        PowerManager.WakeLock wakeLock;
+        static object LOCK = new object();
         public override void OnCreate()
         {
             _cts = new CancellationTokenSource();
@@ -37,7 +39,7 @@ namespace XFBackgroundLocationSample.Droid
         }
         private async Task functionMethod()
         {
-            if(locationService != null)
+            if (locationService != null)
             {
                 await locationService.GetLocation();
             }
@@ -50,6 +52,18 @@ namespace XFBackgroundLocationSample.Droid
             }
             else
             {
+                Context context = global::Android.App.Application.Context;
+                lock (LOCK)
+                {
+                    if (wakeLock == null)
+                    {
+                        var pm = PowerManager.FromContext(context);
+                        wakeLock = pm.NewWakeLock(WakeLockFlags.Partial, "Woken lock");
+                    }
+                }
+
+                wakeLock.Acquire();
+
                 Notification notification = new NotificationHelper().GetServiceStartedNotification();
                 StartForeground(NOTIFICATION_SERVICE_ID, notification);
                 handler.PostDelayed(runnable, DELAY_BETWEEN_LOG_MESSAGES);
@@ -70,12 +84,17 @@ namespace XFBackgroundLocationSample.Droid
                 _cts.Token.ThrowIfCancellationRequested();
                 _cts.Cancel();
             }
+            if (wakeLock != null)
+            {
+                wakeLock.Release();
+                wakeLock = null;
+            }
             base.OnDestroy();
         }
         public override IBinder OnBind(Intent intent)
         {
             return null;
         }
-        
+
     }
 }
